@@ -1,5 +1,6 @@
 import { EventEmitter } from 'node:events';
 import { CheerioCrawler, PlaywrightCrawler, EnqueueStrategy, RobotsFile, Configuration } from 'crawlee';
+import type { EnqueueLinksOptions } from 'crawlee';
 import { load } from 'cheerio';
 import { extractResources } from './lib/extract-resources';
 import { fetchSitemapUrls } from './lib/parse-sitemap';
@@ -94,7 +95,7 @@ export class Crawler extends EventEmitter {
       $: ReturnType<typeof load>,
       statusCode: number | undefined,
       foundOn: string | null,
-      enqueueLinks: (opts: any) => Promise<unknown>
+      enqueueLinks: (opts?: EnqueueLinksOptions) => Promise<unknown>
     ): Promise<void> => {
       const pageUrl = normalizeUrl(rawPageUrl);
       this.emit('url', {

@@ -138,7 +138,7 @@ describe('Crawler', () => {
   });
 
   it('stop() halts the crawl before the queue is exhausted', async () => {
-    const crawler = new Crawler({ baseUrl: base });
+    const crawler = new Crawler({ baseUrl: base, respectRobots: false });
     const pages: DiscoveredUrl[] = [];
     crawler.on('url', (u: DiscoveredUrl) => {
       if (u.type === 'page') {
@@ -147,6 +147,6 @@ describe('Crawler', () => {
       }
     });
     await crawler.crawl();
-    expect(pages.length).toBeLessThanOrEqual(2);
+    expect(pages.length).toBeLessThan(3);
   });
 });
