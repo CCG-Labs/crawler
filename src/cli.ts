@@ -24,7 +24,7 @@ export async function run(args: string[]): Promise<DiscoveredUrl[]> {
       '  --help                Show this help message',
       '',
     ].join('\n'));
-    process.exit(0);
+    return [];
   }
 
   const baseUrl = positionals[0];
@@ -63,7 +63,9 @@ export async function run(args: string[]): Promise<DiscoveredUrl[]> {
 if (require.main === module) {
   run(process.argv.slice(2))
     .then((urls) => {
-      process.stdout.write(JSON.stringify(urls, null, 2) + '\n');
+      if (urls.length > 0) {
+        process.stdout.write(JSON.stringify(urls, null, 2) + '\n');
+      }
     })
     .catch((err: Error) => {
       process.stderr.write(`Error: ${err.message}\n`);
