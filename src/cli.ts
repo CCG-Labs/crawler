@@ -24,7 +24,7 @@ export async function run(args: string[]): Promise<DiscoveredUrl[]> {
       '  --help                Show this help message',
       '',
     ].join('\n'));
-    return [];
+    process.exit(0);
   }
 
   const baseUrl = positionals[0];
