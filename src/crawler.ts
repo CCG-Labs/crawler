@@ -26,6 +26,7 @@ export interface CrawlerOptions {
 export class Crawler extends EventEmitter {
   private readonly opts: Required<Omit<CrawlerOptions, 'maxRequests'>> & { maxRequests?: number };
   private _activeCrawler: CheerioCrawler | PlaywrightCrawler | null = null;
+  private _stopRequested = false;
 
   constructor(options: CrawlerOptions) {
     super();
@@ -38,10 +39,12 @@ export class Crawler extends EventEmitter {
   }
 
   stop(): void {
+    this._stopRequested = true;
     void this._activeCrawler?.autoscaledPool?.abort();
   }
 
   async crawl(): Promise<void> {
+    this._stopRequested = false;
     const { baseUrl, usePlaywright, maxRequests, respectRobots, concurrency } = this.opts;
     const seedUrl = baseUrl.replace(/\/$/, '');
 
@@ -62,17 +65,19 @@ export class Crawler extends EventEmitter {
 
     const sitemapUrls: string[] = robots?.getSitemaps() ?? [];
     const sitemapPageUrls: string[] = [];
-    for (const sitemapUrl of sitemapUrls) {
-      const pages = await fetchSitemapUrls(sitemapUrl);
-      if (pages.length > 0) {
-        sitemapPageUrls.push(...pages);
-        this.emit('url', {
-          url: sitemapUrl,
-          type: 'sitemap' as const,
-          foundOn: `${seedUrl}/robots.txt`,
-        } satisfies DiscoveredUrl);
-      }
-    }
+    await Promise.all(
+      sitemapUrls.map(async (sitemapUrl) => {
+        const pages = await fetchSitemapUrls(sitemapUrl);
+        if (pages.length > 0) {
+          sitemapPageUrls.push(...pages);
+          this.emit('url', {
+            url: sitemapUrl,
+            type: 'sitemap' as const,
+            foundOn: `${seedUrl}/robots.txt`,
+          } satisfies DiscoveredUrl);
+        }
+      })
+    );
 
     const allowedSitemapPages = sitemapPageUrls.filter(
       (u) => !robots || robots.isAllowed(u, 'CCGLabsBot')
@@ -153,6 +158,7 @@ export class Crawler extends EventEmitter {
           crawlerConfig
         );
         this._activeCrawler = crawler;
+        if (this._stopRequested) void crawler.autoscaledPool?.abort();
         await crawler.run(seedList);
       } else {
         const crawler = new CheerioCrawler(
@@ -172,6 +178,7 @@ export class Crawler extends EventEmitter {
           crawlerConfig
         );
         this._activeCrawler = crawler;
+        if (this._stopRequested) void crawler.autoscaledPool?.abort();
         await crawler.run(seedList);
       }
     } finally {

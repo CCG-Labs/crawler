@@ -36,8 +36,10 @@ export function parseSitemapXml(xml: string): SitemapParseResult {
 
 export async function fetchSitemapUrls(
   sitemapUrl: string,
-  visited: Set<string> = new Set()
+  visited: Set<string> = new Set(),
+  depth = 0
 ): Promise<string[]> {
+  if (depth > 10) return [];
   if (visited.has(sitemapUrl)) return [];
   visited.add(sitemapUrl);
 
@@ -57,7 +59,7 @@ export async function fetchSitemapUrls(
 
   if (isIndex) {
     const deduped = [...new Set(urls)].filter((u) => !visited.has(u));
-    const nested = await Promise.all(deduped.map((u) => fetchSitemapUrls(u, visited)));
+    const nested = await Promise.all(deduped.map((u) => fetchSitemapUrls(u, visited, depth + 1)));
     return nested.flat();
   }
 
