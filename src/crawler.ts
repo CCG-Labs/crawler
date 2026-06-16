@@ -153,7 +153,7 @@ export class Crawler extends EventEmitter {
             async requestHandler({ request, $, response, enqueueLinks }) {
               await handlePage(
                 request.url,
-                $ as ReturnType<typeof load>,
+                $ as unknown as ReturnType<typeof load>,
                 response?.statusCode,
                 (request.userData?.foundOn as string | null) ?? null,
                 enqueueLinks
