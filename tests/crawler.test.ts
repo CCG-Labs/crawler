@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import * as http from 'node:http';
+import { CheerioCrawler } from 'crawlee';
 import { Crawler, DiscoveredUrl } from '../src/index';
 
 let server: http.Server;
@@ -135,6 +136,21 @@ describe('Crawler', () => {
     await crawler.crawl();
 
     expect(pages.length).toBeLessThanOrEqual(1);
+  });
+
+  it('emits error event (and still emits done) when the crawl throws', async () => {
+    vi.spyOn(CheerioCrawler.prototype, 'run').mockRejectedValueOnce(new Error('network failure'));
+
+    const crawler = new Crawler({ baseUrl: base });
+    const errors: Error[] = [];
+    let doneFired = false;
+    crawler.on('error', (err: Error) => errors.push(err));
+    crawler.on('done', () => { doneFired = true; });
+
+    await expect(crawler.crawl()).rejects.toThrow('network failure');
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toBe('network failure');
+    expect(doneFired).toBe(true);
   });
 
   it('stop() halts the crawl before the queue is exhausted', async () => {

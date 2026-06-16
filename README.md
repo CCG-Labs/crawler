@@ -87,8 +87,16 @@ await crawler.crawl();
 | Event | Payload | Description |
 |-------|---------|-------------|
 | `url` | `DiscoveredUrl` | Fired per discovered URL |
-| `done` | — | Crawl complete |
-| `error` | `Error` | Fatal error |
+| `done` | — | Fired when the crawl finishes (even on error) |
+| `error` | `Error` | Fatal crawl error |
+
+`crawl()` both emits `error` **and** rejects its Promise, so you can consume errors either way. If using the EventEmitter pattern without `await`, suppress the unhandled rejection with `.catch(() => {})`:
+
+```typescript
+crawler.on('error', (err) => console.error(err));
+crawler.on('done', () => console.log('done'));
+crawler.crawl().catch(() => {}); // suppress unhandled rejection
+```
 
 ## What it discovers
 

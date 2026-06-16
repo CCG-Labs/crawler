@@ -181,6 +181,9 @@ export class Crawler extends EventEmitter {
         if (this._stopRequested) void crawler.autoscaledPool?.abort();
         await crawler.run(seedList);
       }
+    } catch (err) {
+      this.emit('error', err instanceof Error ? err : new Error(String(err)));
+      throw err;
     } finally {
       this._activeCrawler = null;
       this.emit('done');
