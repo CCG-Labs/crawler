@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, vi, afterEach } from 'vitest';
 import * as http from 'node:http';
 import { run } from '../src/cli';
 import type { DiscoveredUrl } from '../src/index';
@@ -66,5 +66,32 @@ describe('CLI run()', () => {
 
   it('exits with an error when --max-requests is not a positive integer', async () => {
     await expect(run([base, '--max-requests', 'abc'])).rejects.toThrow();
+  });
+
+  it('writes initial Crawling message and Done summary to stderr', async () => {
+    const chunks: string[] = [];
+    const spy = vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
+      chunks.push(String(chunk));
+      return true;
+    });
+    await run([base]);
+    spy.mockRestore();
+
+    const stderr = chunks.join('');
+    expect(stderr).toContain(`Crawling ${base}`);
+    expect(stderr).toContain('Done.');
+  });
+
+  it('writes page count progress to stderr during crawl', async () => {
+    const chunks: string[] = [];
+    const spy = vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
+      chunks.push(String(chunk));
+      return true;
+    });
+    await run([base]);
+    spy.mockRestore();
+
+    const stderr = chunks.join('');
+    expect(stderr).toMatch(/pages found/);
   });
 });

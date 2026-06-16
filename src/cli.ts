@@ -44,6 +44,8 @@ export async function run(args: string[]): Promise<DiscoveredUrl[]> {
     maxRequests,
   });
 
+  process.stderr.write(`Crawling ${baseUrl}...\n`);
+
   const urls: DiscoveredUrl[] = [];
   let count = 0;
   crawler.on('url', (u: DiscoveredUrl) => {
