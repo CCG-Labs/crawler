@@ -18,7 +18,7 @@
     "cheerio": "^1",
     "crawlee": "^3",
     "fast-xml-parser": "^4",
-    "playwright": "latest"
+    "playwright": "^1"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7",
