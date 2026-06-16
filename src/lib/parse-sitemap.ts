@@ -56,7 +56,8 @@ export async function fetchSitemapUrls(
   const { isIndex, urls } = parseSitemapXml(text);
 
   if (isIndex) {
-    const nested = await Promise.all(urls.map((u) => fetchSitemapUrls(u, visited)));
+    const deduped = [...new Set(urls)].filter((u) => !visited.has(u));
+    const nested = await Promise.all(deduped.map((u) => fetchSitemapUrls(u, visited)));
     return nested.flat();
   }
 

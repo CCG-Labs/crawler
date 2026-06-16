@@ -45,6 +45,12 @@ export class Crawler extends EventEmitter {
     const { baseUrl, usePlaywright, maxRequests, respectRobots, concurrency } = this.opts;
     const seedUrl = baseUrl.replace(/\/$/, '');
 
+    try {
+      new URL(seedUrl);
+    } catch {
+      throw new Error(`Invalid baseUrl: "${baseUrl}"`);
+    }
+
     let robots: RobotsFile | null = null;
     if (respectRobots) {
       try {
@@ -58,12 +64,14 @@ export class Crawler extends EventEmitter {
     const sitemapPageUrls: string[] = [];
     for (const sitemapUrl of sitemapUrls) {
       const pages = await fetchSitemapUrls(sitemapUrl);
-      sitemapPageUrls.push(...pages);
-      this.emit('url', {
-        url: sitemapUrl,
-        type: 'sitemap' as const,
-        foundOn: `${seedUrl}/robots.txt`,
-      } satisfies DiscoveredUrl);
+      if (pages.length > 0) {
+        sitemapPageUrls.push(...pages);
+        this.emit('url', {
+          url: sitemapUrl,
+          type: 'sitemap' as const,
+          foundOn: `${seedUrl}/robots.txt`,
+        } satisfies DiscoveredUrl);
+      }
     }
 
     const allowedSitemapPages = sitemapPageUrls.filter(

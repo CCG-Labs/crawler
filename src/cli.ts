@@ -15,7 +15,7 @@ export async function run(args: string[]): Promise<DiscoveredUrl[]> {
   });
 
   if (argv.help) {
-    process.stdout.write([
+    process.stderr.write([
       'Usage: crawl <url> [options]',
       '',
       'Options:',
