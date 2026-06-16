@@ -6,6 +6,7 @@
   "types": "./dist/index.d.ts",
   "bin": { "crawl": "./dist/cli.js" },
   "files": ["dist"],
+  "publishConfig": { "access": "public" },
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
