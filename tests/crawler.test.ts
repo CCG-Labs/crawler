@@ -153,6 +153,21 @@ describe('Crawler', () => {
     expect(doneFired).toBe(true);
   });
 
+  it('stop() called before _activeCrawler is assigned skips the crawl entirely', async () => {
+    const crawler = new Crawler({ baseUrl: base, respectRobots: false });
+    const pages: DiscoveredUrl[] = [];
+    let doneFired = false;
+    crawler.on('url', (u: DiscoveredUrl) => { if (u.type === 'page') pages.push(u); });
+    crawler.on('done', () => { doneFired = true; });
+
+    const crawlPromise = crawler.crawl();
+    crawler.stop(); // fires before the first await resolves
+    await crawlPromise;
+
+    expect(pages.length).toBe(0);
+    expect(doneFired).toBe(true);
+  });
+
   it('stop() halts the crawl before the queue is exhausted', async () => {
     const crawler = new Crawler({ baseUrl: base, respectRobots: false });
     const pages: DiscoveredUrl[] = [];

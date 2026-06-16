@@ -158,8 +158,7 @@ export class Crawler extends EventEmitter {
           crawlerConfig
         );
         this._activeCrawler = crawler;
-        if (this._stopRequested) void crawler.autoscaledPool?.abort();
-        await crawler.run(seedList);
+        if (!this._stopRequested) await crawler.run(seedList);
       } else {
         const crawler = new CheerioCrawler(
           {
@@ -178,8 +177,7 @@ export class Crawler extends EventEmitter {
           crawlerConfig
         );
         this._activeCrawler = crawler;
-        if (this._stopRequested) void crawler.autoscaledPool?.abort();
-        await crawler.run(seedList);
+        if (!this._stopRequested) await crawler.run(seedList);
       }
     } catch (err) {
       this.emit('error', err instanceof Error ? err : new Error(String(err)));
