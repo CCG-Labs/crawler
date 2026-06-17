@@ -6,15 +6,27 @@ Built on [Crawlee](https://crawlee.dev). Supports both static sites (Cheerio) an
 
 ## Installation
 
+**From npm** (once published):
+
 ```bash
 npm install @ccg-labs/crawler
 ```
 
-For the CLI:
+**Directly from GitHub** (no npm account required):
 
 ```bash
-npm install -g @ccg-labs/crawler
-npx playwright install chromium   # if using --js
+npm install CCG-Labs/crawler
+
+# Pin to a specific commit
+npm install CCG-Labs/crawler#3989feb
+```
+
+npm will clone the repo, install dependencies, and compile the TypeScript automatically via the `prepare` script. Requires Node.js ≥ 20.
+
+**For the CLI** (either method above, then):
+
+```bash
+npx playwright install chromium   # only if using --js
 ```
 
 ## CLI
