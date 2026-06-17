@@ -4,14 +4,28 @@
   "description": "Site crawler for discovering all URLs and linked resources",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "bin": {
     "crawl": "./dist/cli.js"
   },
   "files": [
     "dist"
   ],
+  "keywords": ["ccg-labs", "crawler", "seo", "typescript", "nodejs"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CCG-Labs/crawler"
+  },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "scripts": {
     "prepare": "tsc",
