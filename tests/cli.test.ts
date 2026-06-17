@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll, vi, afterEach } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import * as http from 'node:http';
 import { run } from '../src/cli';
 import type { DiscoveredUrl } from '../src/index';

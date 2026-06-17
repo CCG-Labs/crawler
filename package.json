@@ -4,9 +4,15 @@
   "description": "Site crawler for discovering all URLs and linked resources",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "bin": { "crawl": "./dist/cli.js" },
-  "files": ["dist"],
-  "publishConfig": { "access": "public" },
+  "bin": {
+    "crawl": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
@@ -14,7 +20,9 @@
     "test": "vitest run --coverage",
     "test:watch": "vitest"
   },
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "cheerio": "^1",
     "crawlee": "^3",
@@ -24,9 +32,9 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7",
     "@typescript-eslint/parser": "^7",
-    "@vitest/coverage-v8": "^2",
+    "@vitest/coverage-v8": "^4.1.9",
     "eslint": "^8",
     "typescript": "^5",
-    "vitest": "^2"
+    "vitest": "^4.1.9"
   }
 }
