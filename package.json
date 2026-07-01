@@ -45,7 +45,7 @@
     "playwright": "^1"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^7",
+    "@typescript-eslint/eslint-plugin": "^8",
     "@typescript-eslint/parser": "^7",
     "@vitest/coverage-v8": "^4.1.9",
     "eslint": "^8",
